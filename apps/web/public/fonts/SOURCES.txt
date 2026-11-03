@@ -1,0 +1,21 @@
+Subtle self-hosted font assets
+
+Unmodified Latin WOFF2 subsets from Google Fonts, licensed under SIL OFL 1.1.
+The full copyright and license notices are included beside each asset.
+
+Lexend Deca
+Family metadata verified from the font: Lexend Deca, normal, weights 100–900.
+https://fonts.gstatic.com/s/lexenddeca/v25/K2F1fZFYk-dHSE0UPPuwQ5qnJy8.woff2
+License: OFL-Lexend-Deca.txt
+
+Inclusive Sans
+Family metadata verified from the font: Inclusive Sans, normal, weights 300–700.
+https://fonts.gstatic.com/s/inclusivesans/v5/0nkxC9biPuwflXcJ46P4PGWE0-7yqQc.woff2
+License: OFL-Inclusive-Sans.txt
+
+JetBrains Mono
+Family metadata verified from the font: JetBrains Mono, normal, weights 400–800.
+https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2
+License: OFL-JetBrains-Mono.txt
+
+Runtime font requests are same-origin. Unsupported glyphs use the system fallback.

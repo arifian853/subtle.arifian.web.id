@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { MotionDemo } from '../../components/MotionDemo';
+import { OverlayDemo } from '../../components/OverlayDemo';
+import { ModeComparison } from '../../components/ModeComparison';
+---
+<Layout path="/motion/">
+  <div class="wrap page-intro"><p class="kicker">Quiet, responsive, purposeful</p><h1>Show what<br />changed.</h1><p class="lead">A small shift keeps your place. A quick tonal change confirms an action. Motion follows your input.</p></div>
+  <div class="wrap motion-reference"><section><h2>Control transition</h2><p>Replay a 200 ms response. The final arrangement remains legible when reduced motion removes the travel.</p><MotionDemo client:load /></section><section><h2>Context into focus</h2><p>A 240 ms overlay gives a local task its own space. Escape and the close control return you to the trigger.</p><OverlayDemo client:visible /></section><section><h2>A change in context</h2><p>Tabs exchange related content without moving the surrounding page.</p><ModeComparison client:visible /></section><section><h2>One motion vocabulary</h2><div class="table-scroll" role="region" tabindex="0" aria-label="Motion token table, scroll horizontally"><table class="data-table"><caption>Subtle motion tokens</caption><thead><tr><th>Role</th><th>Duration</th><th>Use</th></tr></thead><tbody>{[['Fast','160 ms','Small feedback'],['Control','200 ms','Control response'],['Overlay','240 ms','Dialog and sheet'],['Layout','320 ms','Related arrangement'],['Editorial','520 ms','A deliberate reveal']].map(([role,duration,use]) => <tr><td>{role}</td><td>{duration}</td><td>{use}</td></tr>)}</tbody></table></div><p class="reference-note">Reduced motion disables travel and limits animation and transition durations to 0.01 ms. Every control and state remains available.</p></section></div>
+</Layout>

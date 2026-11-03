@@ -1,0 +1,13 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Explorer } from '../../components/Explorer';
+import { MoodSwitcher } from '../../components/MoodSwitcher';
+import { componentCategories } from '@subtle/catalog';
+export function getStaticPaths() { return componentCategories.map(category => ({ params: { category: category.toLowerCase() }, props: { category } })); }
+const { category } = Astro.props;
+---
+<Layout path="/components/" category={category}>
+  <div class="wrap page-intro"><a class="text-link" href="/components/">All components</a><h1>{category} components</h1><p class="lead">Try the canonical {category.toLowerCase()} families. Each specimen keeps its anatomy and behavior across all eight moods.</p></div>
+  <div class="wrap catalog-moods"><MoodSwitcher client:load /></div>
+  <div class="wrap explorer-wrap"><Explorer initialCategory={category} client:load /></div>
+</Layout>

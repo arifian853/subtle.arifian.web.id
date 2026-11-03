@@ -1,0 +1,46 @@
+---
+import '../styles/global.css';
+import { moodCss } from '@subtle/catalog/tokens';
+import { moodBootScript } from '../lib/mood';
+import { seo, categorySeo, type pages } from '../lib/seo';
+const { path = '/', category } = Astro.props as { path?: keyof typeof pages; category?: string };
+const meta = category ? categorySeo(category) : seo(path);
+---
+<!doctype html>
+<html lang="en" data-mood="beige">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/lexend-deca-latin.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/inclusive-sans-latin.woff2" crossorigin />
+    <meta name="theme-color" content="#FAF8F5" />
+    <script is:inline set:html={moodBootScript} />
+    <title>{meta.title}</title>
+    <meta name="description" content={meta.description} />
+    <link rel="canonical" href={meta.canonical} />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Subtle" />
+    <meta property="og:title" content={meta.title} />
+    <meta property="og:description" content={meta.description} />
+    <meta property="og:url" content={meta.canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={meta.title} />
+    <meta name="twitter:description" content={meta.description} />
+    <link rel="icon" href="data:," />
+    <style is:inline set:html={moodCss()} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header wrap">
+      <a href="/" class="wordmark" aria-label="Subtle home">subtle<span aria-hidden="true">✳</span></a>
+      <nav aria-label="Main navigation">
+        {(['Foundations', 'Components', 'Patterns', 'Moods'] as const).map(label => <a href={`/${label.toLowerCase()}/`} aria-current={path.startsWith(`/${label.toLowerCase()}/`) ? 'page' : undefined}>{label}</a>)}
+      </nav>
+      <a class="header-about" href="/about/">A system by Arifian <span aria-hidden="true">↗</span></a>
+      <details class="mobile-nav"><summary>Menu</summary><nav aria-label="Mobile navigation">{['Foundations', 'Components', 'Patterns', 'Moods', 'Motion', 'About'].map(label => <a href={`/${label.toLowerCase()}/`}>{label}</a>)}</nav></details>
+    </header>
+    <main id="main" tabindex="-1"><slot /></main>
+    <footer class="site-footer wrap"><a class="wordmark" href="/">subtle<span aria-hidden="true">✳</span></a><p>Soft Editorial Materialism<br />Designed by Arifian.</p><nav aria-label="Footer"><a href="/motion/">Motion</a><a href="/about/">About & credits</a><a href="/about/#agent-access">Agent access</a><a href="#main">Back to top ↑</a></nav><span class="mono">One system. Eight moods.</span></footer>
+  </body>
+</html>

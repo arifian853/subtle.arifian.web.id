@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Explorer } from '../../components/Explorer';
+import { MoodSwitcher } from '../../components/MoodSwitcher';
+import { componentCategories } from '@subtle/catalog';
+---
+<Layout path="/components/">
+  <div class="wrap page-intro"><p class="kicker">Owned components. Shared anatomy.</p><h1>Consider every<br />interaction.</h1><p class="lead">Explore canonical families, then try their behavior. Every specimen uses synthetic data and the current mood.</p><div class="category-links" aria-label="Component categories">{componentCategories.map(category => <a href={`/components/${category.toLowerCase()}/`}>{category}</a>)}</div></div>
+  <div class="wrap catalog-moods"><MoodSwitcher client:load /></div>
+  <div class="wrap explorer-wrap"><Explorer client:load /></div>
+</Layout>

@@ -1,0 +1,26 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { catalog } from '@subtle/catalog';
+import { ModeComparison } from '../../components/ModeComparison';
+import { SettingsForm } from '../../components/SettingsForm';
+import { DataDemo, Metric } from '../../components/DataDemo';
+import { Conversation } from '../../components/Conversation';
+import { FileCollection } from '../../components/FileCollection';
+import { CommandDemo } from '../../components/CommandDemo';
+import { Botanical } from '../../components/Homepage';
+import { MoodSwitcher } from '../../components/MoodSwitcher';
+const patterns = catalog.filter(item => item.kind === 'pattern');
+---
+<Layout path="/patterns/">
+  <div class="wrap page-intro"><p class="kicker">A grammar for real work</p><h1>Pieces become<br />places.</h1><p class="lead">Compose the same foundations into a story, a studio, or a space to think. These working examples stay entirely local.</p></div>
+  <div class="wrap catalog-moods"><MoodSwitcher client:load /></div>
+  <div class="wrap pattern-list">{patterns.map(item => <section class="pattern-section" id={item.id}><div class="pattern-description"><p class="kicker">{item.category}</p><h2>{item.title}</h2><p>{item.description}</p><p>{item.usage}</p><details><summary>Accessibility notes</summary><p>{item.accessibility}</p></details></div><div class="pattern-preview">
+    {item.id === 'editorial-hero' && <ModeComparison client:visible />}
+    {item.id === 'settings' && <div class="surface-card"><h3>Fieldnotes studio</h3><SettingsForm client:visible /></div>}
+    {item.id === 'dashboard' && <><Metric /><DataDemo client:visible /></>}
+    {item.id === 'ai-conversation' && <Conversation client:visible />}
+    {item.id === 'file-manager' && <FileCollection client:visible />}
+    {(item.id === 'search-results' || item.id === 'command-workflow') && <CommandDemo client:visible />}
+    {item.id === 'media-gallery' && <Botanical caption="Everyday shapes, considered together" />}
+  </div></section>)}</div>
+</Layout>

@@ -1,0 +1,25 @@
+{
+  "name": "@subtle/web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --bun astro dev --host 127.0.0.1",
+    "check": "bun --bun astro check",
+    "build": "NODE_ENV=production bun --bun astro build"
+  },
+  "dependencies": {
+    "@subtle/catalog": "workspace:*",
+    "astro": "7.4.2",
+    "@astrojs/react": "7.1.1",
+    "@astrojs/check": "0.9.10",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "@base-ui/react": "1.8.0",
+    "@tailwindcss/vite": "4.3.3",
+    "tailwindcss": "4.3.3",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "tailwind-merge": "3.7.0",
+    "lucide-react": "1.61.0"
+  }
+}

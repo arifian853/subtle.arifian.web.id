@@ -1,0 +1,6 @@
+{
+  "name": "@subtle/catalog",
+  "private": true,
+  "type": "module",
+  "exports": {".": "./src/index.ts", "./tokens": "./src/tokens.ts"}
+}

@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Homepage } from '../components/Homepage';
+import { HeroLive } from '../components/HeroLive';
+import { MoodSwitcher } from '../components/MoodSwitcher';
+import { ModeComparison } from '../components/ModeComparison';
+import { CommandDemo } from '../components/CommandDemo';
+import { OverlayDemo } from '../components/OverlayDemo';
+import { Conversation } from '../components/Conversation';
+import { MotionDemo } from '../components/MotionDemo';
+import { SettingsForm } from '../components/SettingsForm';
+import { Metric } from '../components/DataDemo';
+import { Botanical } from '../components/Homepage';
+import { Badge, Progress } from '../components/ui/feedback';
+---
+<Layout><Homepage>
+  <HeroLive slot="hero" client:load />
+  <MoodSwitcher slot="switcher" client:load />
+  <div slot="mosaic" class="mosaic">
+    <div class="mosaic-story"><Botanical caption="A study in everyday shapes" /><div class="mosaic-caption"><h3>Space to notice.</h3><p>Media Surface / 32 px anchor</p></div></div>
+    <Metric />
+    <div class="mosaic-settings surface-card"><h3>Make it yours.</h3><SettingsForm client:visible /></div>
+    <div class="tonal-card mosaic-note"><Badge>Ready when you are</Badge><h3>Small details.<br />A calmer whole.</h3><Progress value={84} label="A little progress" /></div>
+  </div>
+  <ModeComparison slot="modes" client:visible />
+  <div slot="signatures" class="signature-layout"><CommandDemo client:visible /><Conversation client:visible /><OverlayDemo client:visible /></div>
+  <MotionDemo slot="motion" client:visible />
+</Homepage></Layout>

@@ -1,0 +1,9 @@
+# Netlify serves the static Astro frontend only.
+[build]
+base = "."
+command = "bun run build"
+publish = "apps/web/dist"
+
+[build.environment]
+BUN_VERSION = "1.4.2"
+ASTRO_TELEMETRY_DISABLED = "1"

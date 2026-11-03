@@ -1,0 +1,11 @@
+{
+  "name": "@subtle/api",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@subtle/catalog": "workspace:*",
+    "elysia": "1.4.30",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "4.6.7"
+  }
+}
