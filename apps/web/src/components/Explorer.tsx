@@ -1,11 +1,12 @@
-import { useEffect, useId, useState } from "react";
+import { lazy, Suspense, useEffect, useId, useState } from "react";
 import {
   catalog,
   componentCategories,
+  componentHierarchy,
   type CatalogItem,
 } from "@subtle/catalog";
 import { Button } from "./ui/button";
-import { Field, FieldLabel, Input, NativeSelect } from "./ui/field";
+import { Field, FieldLabel, Input } from "./ui/field";
 import { Badge, Progress } from "./ui/feedback";
 import { SettingsForm } from "./SettingsForm";
 import { OverlayDemo } from "./OverlayDemo";
@@ -16,6 +17,12 @@ import { Botanical } from "./Homepage";
 import { ModeComparison } from "./ModeComparison";
 import { MoodSwitcher } from "./MoodSwitcher";
 import { FeedbackDemo } from "./FeedbackDemo";
+import { Select } from "./ui/select";
+import { Scrollbar } from "./ui/scrollbar";
+import { MoodPicker } from "./MoodPicker";
+const ChartSpecimen = lazy(() =>
+  import("./Charts").then((module) => ({ default: module.ChartSpecimen })),
+);
 const components = catalog.filter((item) => item.kind === "component");
 
 function ActionsSpecimen() {
@@ -67,10 +74,36 @@ export function CanonicalSpecimen({ id }: { id: string }) {
     return <Conversation />;
   if (["dialog", "sheet", "inspector"].includes(id)) return <OverlayDemo />;
   if (id === "command") return <CommandDemo />;
+  if (id === "scrollbar")
+    return (
+      <Scrollbar label="Scrollable studio notes" style={{ maxHeight: 200 }}>
+        <ol>
+          {Array.from({ length: 20 }, (_, index) => (
+            <li key={index}>
+              Studio note {index + 1}: keep the reading order clear.
+            </li>
+          ))}
+        </ol>
+      </Scrollbar>
+    );
+  if (id === "mood-picker") return <MoodPicker />;
+  if (id === "chart")
+    return (
+      <Suspense
+        fallback={
+          <p>
+            Loading chart. Data: Jan 24, Feb 32, Mar 28, Apr 42, May 38, Jun 48
+            studies.
+          </p>
+        }
+      >
+        <ChartSpecimen />
+      </Suspense>
+    );
   if (id === "mood-switcher") return <MoodSwitcher />;
   if (id === "tabs") return <ModeComparison />;
   if (id === "data-table") return <DataDemo />;
-  if (["chart", "metric"].includes(id)) return <Metric />;
+  if (id === "metric") return <Metric />;
   if (id === "media") return <Botanical />;
   if (["toast", "skeleton", "empty"].includes(id)) return <FeedbackDemo />;
   if (id === "status")
@@ -176,34 +209,53 @@ export function Explorer({
         </Field>
         <Field>
           <FieldLabel htmlFor={`${id}-category`}>Component category</FieldLabel>
-          <NativeSelect
+          <Select
             id={`${id}-category`}
             name="category"
+            label="Component category"
             value={category}
-            onChange={(event) => updateFilter(query, event.target.value)}
-          >
-            <option value="">All categories</option>
-            {componentCategories.map((value) => (
-              <option key={value}>{value}</option>
-            ))}
-          </NativeSelect>
+            onValueChange={(value) => updateFilter(query, value)}
+            options={[
+              { value: "", label: "All categories" },
+              ...componentCategories.map((value) => ({ value, label: value })),
+            ]}
+          />
         </Field>
         <p className="product-meta" role="status">
           {results.length
-            ? `${results.length} canonical families`
+            ? `${results.length} catalog entries`
             : "No matches. Clear a filter or try a shorter name."}
         </p>
-        <nav aria-label="Component families" tabIndex={0}>
-          {results.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              aria-current={selected.id === item.id ? "true" : undefined}
-              onClick={() => setSelected(item)}
-            >
-              {item.title}
-            </a>
-          ))}
+        <nav aria-label="Component families" tabIndex={0} className="scrollbar">
+          {componentHierarchy.map((group) => {
+            const families = group.families.filter((family) =>
+              family.ids.some((id) => results.some((item) => item.id === id)),
+            );
+            return families.length ? (
+              <div key={group.title} className="family-group">
+                <h2>{group.title}</h2>
+                {families.map((family) => {
+                  const item = components.find(
+                    (item) => item.id === family.ids[0],
+                  )!;
+                  return (
+                    <a
+                      key={item.id}
+                      href={`#${item.id}`}
+                      aria-current={
+                        family.ids.includes(selected.id) ? "true" : undefined
+                      }
+                      onClick={() => setSelected(item)}
+                    >
+                      {family.ids.length > 1
+                        ? "Button / Icon Button"
+                        : item.title}
+                    </a>
+                  );
+                })}
+              </div>
+            ) : null;
+          })}
         </nav>
       </aside>
       <article className="explorer-detail" id={selected.id}>

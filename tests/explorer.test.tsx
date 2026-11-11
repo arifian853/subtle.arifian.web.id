@@ -17,9 +17,13 @@ test("component explorer searches canonical families, filters category, and open
   ).toBeTruthy();
   expect(ui.getByRole("button", { name: "Open inspector" })).toBeTruthy();
   fireEvent.change(ui.getByRole("searchbox"), { target: { value: "" } });
-  fireEvent.change(ui.getByLabelText("Component category"), {
-    target: { value: "Data" },
-  });
+  fireEvent.click(ui.getByRole("combobox", { name: "Component category" }));
+  const option = await ui.findByRole("option", { name: /^Data$/ });
+  fireEvent.pointerDown(option, { pointerType: "mouse" });
+  fireEvent.click(option);
+  await waitFor(() =>
+    expect(ui.getByRole("combobox").textContent).toContain("Data"),
+  );
   expect(ui.getByRole("link", { name: "Data Table" })).toBeTruthy();
   expect(ui.queryByRole("link", { name: "Layered Sheet" })).toBeNull();
 });

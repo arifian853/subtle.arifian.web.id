@@ -7,10 +7,10 @@ import { pages } from "../apps/web/src/lib/seo";
 
 // Intercept the exact built tree. This needs no HTTP listener or external network.
 const root = resolve("apps/web/dist");
-const origin = "http://subtle.test";
-await mkdir(".cache/tmp", { recursive: true });
+const origin = "https://subtle.test";
+
 await mkdir(".qa/screenshots", { recursive: true });
-process.env.TMPDIR = resolve(".cache/tmp");
+// Respect the caller’s workspace-owned TMPDIR; never override it.
 function check(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
 }
@@ -96,23 +96,32 @@ try {
       })),
     });
     const violationDetails = outcome.violations
-      .map((item) =>
-        `${item.id}: ${item.nodes
-          .map((node) => `${node.target.join(" ")} — ${node.failureSummary?.replace(/\s+/g, " ").trim() ?? "no detail"}`)
-          .join("; ")}`,
+      .map(
+        (item) =>
+          `${item.id}: ${item.nodes
+            .map(
+              (node) =>
+                `${node.target.join(" ")} — ${node.failureSummary?.replace(/\s+/g, " ").trim() ?? "no detail"}`,
+            )
+            .join("; ")}`,
       )
       .join(" | ");
-    check(!outcome.violations.length, `axe violations: ${label}: ${violationDetails}`);
+    check(
+      !outcome.violations.length,
+      `axe violations: ${label}: ${violationDetails}`,
+    );
   }
   const waitForColorTransitions = async () => {
     await page.waitForFunction(
       () =>
         !document.getAnimations().some((animation) => {
-          const property = (animation as Animation & { transitionProperty?: string })
-            .transitionProperty;
+          const property = (
+            animation as Animation & { transitionProperty?: string }
+          ).transitionProperty;
           return (
-            ["color", "background-color", "border-color"].includes(property ?? "") &&
-            animation.playState === "running"
+            ["color", "background-color", "border-color"].includes(
+              property ?? "",
+            ) && animation.playState === "running"
           );
         }),
       undefined,
@@ -209,6 +218,85 @@ try {
     (await page.getByRole("log").textContent())?.includes("A synthetic note."),
     "Local composer",
   );
+  // Owned Select keyboard flow and focus restoration in the actual explorer.
+  await page.goto(`${origin}/components/`);
+  await ready("Explorer");
+  const categorySelect = page.getByRole("combobox", {
+    name: "Component category",
+  });
+  await categorySelect.focus();
+  await page.keyboard.press("Enter");
+  await page.getByRole("option", { name: "Data", exact: true }).click();
+  check(
+    (await categorySelect.textContent())?.includes("Data"),
+    "Owned Select updates label",
+  );
+  check(
+    await page
+      .getByRole("link", { name: "Data Table", exact: true })
+      .isVisible(),
+    "Select filters grouped families",
+  );
+  check(
+    (await page
+      .getByRole("link", { name: "Layered Sheet", exact: true })
+      .count()) === 0,
+    "Select excludes unrelated families",
+  );
+  await categorySelect.click();
+  await page.keyboard.press("Escape");
+  check(
+    await categorySelect.evaluate(
+      (element) => element === document.activeElement,
+    ),
+    "Select Escape restores focus",
+  );
+  await page.goto(`${origin}/moods/`);
+  await ready("MoodBoards");
+  check(
+    (await page.getByRole("region").count()) === 8,
+    "Exactly eight token boards",
+  );
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin,
+  });
+  await page
+    .getByRole("button", { name: "Copy Beige --primary", exact: true })
+    .click();
+  check(
+    (await page.evaluate(() => navigator.clipboard.readText())) ===
+      "--primary: #6B5040;",
+    "Board copies semantic declaration",
+  );
+  check(
+    (await page.locator(".copy-status").textContent())?.includes(
+      "Copied Beige --primary",
+    ),
+    "Board announces copy",
+  );
+  const boardMetrics = await page
+    .getByRole("region", { name: "Beige token board" })
+    .evaluate((element) => ({
+      scroll: element.scrollHeight > element.clientHeight,
+      tabIndex: (element as HTMLElement).tabIndex,
+      overflow: getComputedStyle(element).overflowY,
+    }));
+  check(
+    boardMetrics.scroll &&
+      boardMetrics.tabIndex === 0 &&
+      boardMetrics.overflow === "auto",
+    "Token board uses bounded native scrolling",
+  );
+  await page.goto(`${origin}/foundations/`);
+  await ready("RadiusDemo");
+  await page.getByRole("button", { name: "Close corner preview" }).click();
+  check(
+    await page
+      .getByRole("button", { name: "Restore preview" })
+      .evaluate((element) => element === document.activeElement),
+    "Close preview retains keyboard focus",
+  );
+  await page.getByRole("button", { name: "Restore preview" }).click();
   // Seven viewport widths against every primary route.
   for (const width of [320, 390, 430, 768, 1024, 1280, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
@@ -230,6 +318,8 @@ try {
           `Desktop component family list is bounded and keyboard-scrollable at ${width}px`,
         );
       }
+      if (path === "/charts/") await ready("Charts");
+      if (path === "/moods/") await ready("MoodBoards");
       await audit(page, `${path} @ ${width}`);
     }
     console.log(`Responsive/axe complete: ${width}px`);
@@ -264,6 +354,35 @@ try {
       });
     }
   }
+  // Chart views retain readable data and geometry across the same eight moods.
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto(`${origin}/charts/`);
+    await ready("Charts");
+    for (const id of moodOrder) {
+      await page
+        .getByRole("radio", { name: moods[id].name, exact: true })
+        .check();
+      await waitForColorTransitions();
+      await page.locator(".chart-study summary").first().click();
+      check(
+        await page
+          .getByRole("table", { name: /Activity over time/ })
+          .isVisible(),
+        "Chart data alternative",
+      );
+      await page.locator(".chart-study summary").first().click();
+      check(
+        (await page.locator(".chart-plot .recharts-surface").count()) === 5,
+        "All chart families render SVG",
+      );
+      await audit(page, `charts ${id} @ ${width}`);
+      await page.screenshot({
+        path: `.qa/screenshots/charts-${id}-${width}.png`,
+        fullPage: true,
+      });
+    }
+  }
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(`${origin}/motion/`);
   await ready("MotionDemo");
@@ -281,13 +400,13 @@ try {
   await Bun.write(
     ".qa/browser-results.json",
     JSON.stringify(
-      { state: "passed", results, errors, screenshots: 16 },
+      { state: "passed", results, errors, screenshots: 32 },
       null,
       2,
     ),
   );
   console.log(
-    `Browser gate passed: ${results.length} axe/layout cases, 16 screenshots, no runtime errors.`,
+    `Browser gate passed: ${results.length} axe/layout cases, 32 screenshots, no runtime errors.`,
   );
 } catch (error) {
   await Bun.write(

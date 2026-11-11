@@ -1,12 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { moods, moodOrder } from '@subtle/catalog';
+import { MoodBoards } from '../../components/MoodBoards';
 import { MoodSwitcher } from '../../components/MoodSwitcher';
-import { MoodGallery } from '../../components/Homepage';
 ---
 <Layout path="/moods/">
   <div class="wrap page-intro"><p class="kicker">Eight atmospheres. One visual grammar.</p><h1>A familiar system.<br />A different feeling.</h1><p class="lead">Choose a mood to change the whole page. Typography, spacing, shapes, and behavior stay consistent.</p></div>
   <div class="wrap catalog-moods"><MoodSwitcher client:load /></div>
-  <section class="wrap section mood-page-gallery" aria-labelledby="mood-specimens"><h2 id="mood-specimens" class="sr-only">Mood specimens</h2><MoodGallery /></section>
-  <div class="wrap mood-token-sections">{moodOrder.map(id => <section id={id} class="mood-token-section"><div><h2>{moods[id].name}</h2><p>{moods[id].description}</p><p class="product-meta">{moods[id].dark ? 'Native dark mood' : 'Native light mood'}{id === 'beige' ? ' / Default' : ''}</p>{id === 'rosewood' && <p class="reference-note">Use text-subtle-readable for supporting text and status-available-text-aa for availability. The canonical values remain available alongside these corrections.</p>}</div><details><summary>Inspect {moods[id].name} tokens</summary><dl class="mood-token-list">{Object.entries(moods[id].tokens).map(([name, value]) => <div><dt><span style={`background-color:${value}`} aria-hidden="true"></span><code>{name}</code></dt><dd><code>{value}</code></dd></div>)}</dl></details></section>)}</div>
+  <div class="wrap"><MoodBoards client:load /></div>
 </Layout>

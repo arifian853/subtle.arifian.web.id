@@ -8,18 +8,19 @@
     "build": "NODE_ENV=production bun --bun astro build"
   },
   "dependencies": {
-    "@subtle/catalog": "workspace:*",
-    "astro": "7.4.2",
-    "@astrojs/react": "7.1.1",
     "@astrojs/check": "0.9.10",
-    "react": "19.3.1",
-    "react-dom": "19.3.1",
+    "@astrojs/react": "7.1.1",
     "@base-ui/react": "1.8.0",
+    "@subtle/catalog": "workspace:*",
     "@tailwindcss/vite": "4.3.3",
-    "tailwindcss": "4.3.3",
+    "astro": "7.4.2",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
+    "lucide-react": "1.61.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "recharts": "3.8.0",
     "tailwind-merge": "3.7.0",
-    "lucide-react": "1.61.0"
+    "tailwindcss": "4.3.3"
   }
 }

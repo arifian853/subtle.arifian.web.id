@@ -147,9 +147,11 @@ export function Homepage({
             <br />a softer side.
           </h1>
           <p className="lead">
-            A little more room to breathe.
-            <br />A considered design system for stories, tools,
-            <br className="desktop-break" /> and everything in between.
+            A shared language for editorial pages and working software.
+            <br />
+            Explore tonal surfaces, considered controls,
+            <br className="desktop-break" /> and eight moods that keep the same
+            grammar.
           </p>
           <div className="actions">
             <a className="button primary" href="/components/">
@@ -199,7 +201,7 @@ export function Homepage({
           </div>
         </div>
         <div className="hero-foot">
-          <span>Designed by Arifian</span>
+          <span>Arifian / author and curator</span>
           <span>Editorial sensibility. Product precision.</span>
           <span className="mono">Subtle / v1.0</span>
         </div>
@@ -409,6 +411,13 @@ export function Homepage({
           <br />
           for software.
         </h2>
+        <p className="closing-credit">
+          Authored and curated by Arifian, drawing on Material principles,
+          editorial design, and credited open-source interaction work.{" "}
+          <a className="text-link" href="/about/#provenance">
+            Read the inspirations and credits
+          </a>
+        </p>
         <a href="/foundations/" className="button primary">
           Start with the foundations <span aria-hidden="true">↗</span>
         </a>

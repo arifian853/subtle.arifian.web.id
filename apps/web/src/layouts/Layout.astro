@@ -35,10 +35,10 @@ const meta = category ? categorySeo(category) : seo(path);
     <header class="site-header wrap">
       <a href="/" class="wordmark" aria-label="Subtle home">subtle<span aria-hidden="true">✳</span></a>
       <nav aria-label="Main navigation">
-        {(['Foundations', 'Components', 'Patterns', 'Moods'] as const).map(label => <a href={`/${label.toLowerCase()}/`} aria-current={path.startsWith(`/${label.toLowerCase()}/`) ? 'page' : undefined}>{label}</a>)}
+        {(['Foundations', 'Components', 'Charts', 'Patterns', 'Motion', 'Moods'] as const).map(label => <a href={`/${label.toLowerCase()}/`} aria-current={path.startsWith(`/${label.toLowerCase()}/`) ? 'page' : undefined}>{label}</a>)}
       </nav>
       <a class="header-about" href="/about/">A system by Arifian <span aria-hidden="true">↗</span></a>
-      <details class="mobile-nav"><summary>Menu</summary><nav aria-label="Mobile navigation">{['Foundations', 'Components', 'Patterns', 'Moods', 'Motion', 'About'].map(label => <a href={`/${label.toLowerCase()}/`}>{label}</a>)}</nav></details>
+      <details class="mobile-nav"><summary>Menu</summary><nav aria-label="Mobile navigation">{['Foundations', 'Components', 'Charts', 'Patterns', 'Motion', 'Moods', 'About'].map(label => <a href={`/${label.toLowerCase()}/`}>{label}</a>)}</nav></details>
     </header>
     <main id="main" tabindex="-1"><slot /></main>
     <footer class="site-footer wrap"><a class="wordmark" href="/">subtle<span aria-hidden="true">✳</span></a><p>Soft Editorial Materialism<br />Designed by Arifian.</p><nav aria-label="Footer"><a href="/motion/">Motion</a><a href="/about/">About & credits</a><a href="/about/#agent-access">Agent access</a><a href="#main">Back to top ↑</a></nav><span class="mono">One system. Eight moods.</span></footer>

@@ -23,7 +23,7 @@ while (queue.length) {
     const texts: string[] = [];
     for (const candidate of candidates) {
       try {
-        texts.push(await readFile(join(directory, candidate), "utf8"));
+        texts.push((await readFile(join(directory, candidate), "utf8")).replace(/\r\n/g, "\n").replace(/[ \t]+$/gm, ""));
       } catch {
         /* Directory, not a license text. */
       }

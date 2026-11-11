@@ -1,6 +1,7 @@
 import { useId, useRef, useState } from "react";
+import { Select } from "./ui/select";
 import { Button } from "./ui/button";
-import { Field, FieldGroup, FieldLabel, Input, NativeSelect } from "./ui/field";
+import { Field, FieldGroup, FieldLabel, Input } from "./ui/field";
 
 export function SettingsForm() {
   const id = useId();
@@ -45,11 +46,17 @@ export function SettingsForm() {
         </Field>
         <Field>
           <FieldLabel htmlFor={`${id}-type`}>Workspace type</FieldLabel>
-          <NativeSelect id={`${id}-type`} name="type" defaultValue="team">
-            <option value="team">Team studio</option>
-            <option value="personal">Personal collection</option>
-            <option value="research">Research space</option>
-          </NativeSelect>
+          <Select
+            id={`${id}-type`}
+            name="type"
+            label="Workspace type"
+            defaultValue="team"
+            options={[
+              { value: "team", label: "Team studio" },
+              { value: "personal", label: "Personal collection" },
+              { value: "research", label: "Research space" },
+            ]}
+          />
         </Field>
         <Field>
           <label className="checkbox-label">

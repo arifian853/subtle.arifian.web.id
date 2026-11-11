@@ -21,6 +21,7 @@ Object.assign(globalThis, {
   IS_REACT_ACT_ENVIRONMENT: true,
 });
 Object.defineProperty(window, "matchMedia", {
+  configurable: true,
   value: () => ({
     matches: false,
     addEventListener() {},

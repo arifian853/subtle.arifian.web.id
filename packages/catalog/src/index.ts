@@ -63,8 +63,8 @@ const components: Entry[] = [
     "Select",
     "Forms",
     "A labeled selection from a finite set of options.",
-    "Use the native select for short choices; reserve a combobox for larger searchable sets.",
-    "Retain native keyboard selection, selected value, and visible focus.",
+    "Use the owned Base UI Select for finite app choices; reserve a combobox for searchable sets.",
+    "Base UI supplies arrow navigation, typeahead, selection, Escape dismissal, and trigger focus restoration.",
   ],
   [
     "checkbox",
@@ -206,7 +206,7 @@ const components: Entry[] = [
     "chart",
     "Chart",
     "Data",
-    "A compact SVG plot for a synthetic activity series.",
+    "Responsive Recharts area, bar, line, pie, and composed views of synthetic studio activity.",
     "Keep plot colors within the mood and provide the underlying values.",
     "Name the chart and include its data in the accessible description.",
   ],
@@ -243,6 +243,107 @@ const components: Entry[] = [
     "Label the text field, preserve multiline editing, and explain empty input.",
   ],
 ];
+// Existing stable IDs remain retrievable even when a family contains variants.
+components.push(
+  [
+    "mood-picker",
+    "Mood Picker",
+    "Forms",
+    "A reusable eight-choice atmosphere control.",
+    "Use controlled value and onValueChange for a local preview, or omit them to apply the site mood.",
+    "Native radios provide grouped naming, arrow navigation, and an announced selection.",
+  ],
+  [
+    "scrollbar",
+    "Scrollbar",
+    "Navigation",
+    "A named scroll region with a mood-aware native scrollbar.",
+    "Bound a long list, token board, or table while keeping page composition open.",
+    "Keep Tab focus and browser arrow, Page Up/Down, touch, and wheel scrolling. Never capture scroll events.",
+  ],
+);
+/** IA reference: https://ui.shadcn.com/docs/components (official alphabetical family order).
+ * Categories organize tasks; Subtle extensions sit beside the nearest documented anatomy.
+ * These references govern navigation only, never appearance.
+ */
+export const componentHierarchy = [
+  {
+    title: "Actions",
+    families: [{ title: "Button", ids: ["button", "icon-button"] }],
+  },
+  {
+    title: "Forms",
+    families: [
+      { title: "Checkbox", ids: ["checkbox"] },
+      { title: "Input", ids: ["input"] },
+      { title: "Mood Picker", ids: ["mood-picker"] },
+      { title: "Select", ids: ["select"] },
+      { title: "Textarea", ids: ["textarea"] },
+    ],
+  },
+  {
+    title: "Navigation",
+    families: [
+      { title: "Command", ids: ["command"] },
+      { title: "Navigation Menu / Adaptive Header", ids: ["adaptive-header"] },
+      { title: "Scroll Area / Scrollbar", ids: ["scrollbar"] },
+      { title: "Tabs", ids: ["tabs"] },
+    ],
+  },
+  {
+    title: "Feedback",
+    families: [
+      { title: "Badge / Status", ids: ["status"] },
+      { title: "Empty", ids: ["empty"] },
+      { title: "Progress", ids: ["progress"] },
+      { title: "Skeleton", ids: ["skeleton"] },
+      { title: "Toast", ids: ["toast"] },
+    ],
+  },
+  {
+    title: "Overlays",
+    families: [
+      { title: "Dialog", ids: ["dialog"] },
+      { title: "Popover / Floating Inspector", ids: ["inspector"] },
+      { title: "Sheet", ids: ["sheet"] },
+    ],
+  },
+  {
+    title: "Data",
+    families: [
+      { title: "Chart", ids: ["chart"] },
+      { title: "Data Table", ids: ["data-table"] },
+      { title: "Metric", ids: ["metric"] },
+    ],
+  },
+  {
+    title: "Surfaces",
+    families: [
+      { title: "Card / Tonal Card", ids: ["tonal-card"] },
+      { title: "Context Capsule", ids: ["context-capsule"] },
+      { title: "Soft Mosaic Tile", ids: ["mosaic-tile"] },
+    ],
+  },
+  { title: "Media", families: [{ title: "Media Surface", ids: ["media"] }] },
+  {
+    title: "AI",
+    families: [
+      { title: "Message", ids: ["ai-message"] },
+      { title: "Prompt Input / AI Composer", ids: ["ai-composer"] },
+    ],
+  },
+  {
+    title: "Atmosphere",
+    families: [{ title: "Mood Switcher", ids: ["mood-switcher"] }],
+  },
+];
+const familyCategory = new Map(
+  componentHierarchy.flatMap((group) =>
+    group.families.flatMap((family) =>
+      family.ids.map((id) => [id, group.title] as const),
+    ),
+  ),
+);
 const patterns: Entry[] = [
   [
     "editorial-hero",
@@ -376,7 +477,8 @@ function fromEntries(
     ([id, title, category, description, usage, accessibility, states]) => ({
       id,
       title,
-      category,
+      category:
+        kind === "component" ? (familyCategory.get(id) ?? category) : category,
       kind,
       description,
       usage,
@@ -386,7 +488,7 @@ function fromEntries(
       provenance:
         kind === "component"
           ? "Subtle authored presentation; Base UI and native HTML behavior."
-          : "Original Subtle design contract by Arifian.",
+          : "Subtle design contract authored and curated by Arifian, informed by credited references.",
     }),
   );
 }
@@ -411,9 +513,9 @@ export const catalog: readonly CatalogItem[] = [
     tokens: { ...moods[id].tokens },
   })),
 ];
-export const componentCategories = [
-  ...new Set(components.map((entry) => entry[2])),
-];
+export const componentCategories = componentHierarchy.map(
+  (group) => group.title,
+);
 export function getCatalogItem(id: string) {
   return catalog.find((item) => item.id === id);
 }

@@ -17,6 +17,7 @@ test("built public routes have unique metadata, semantic content, navigation and
     "",
     "foundations",
     "components",
+    "charts",
     "patterns",
     "motion",
     "moods",
@@ -39,7 +40,7 @@ test("built public routes have unique metadata, semantic content, navigation and
     expect(sitemap).toContain(`<loc>${canonical}</loc>`);
     titles.add(document.title);
   }
-  expect(titles.size).toBe(7);
+  expect(titles.size).toBe(8);
 }, 30000);
 test("every component category has a usable static route, unique canonical metadata and a filtered explorer", () => {
   for (const category of componentCategories) {
@@ -52,9 +53,10 @@ test("every component category has a usable static route, unique canonical metad
       document.querySelector('link[rel="canonical"]')?.getAttribute("href"),
     ).toBe(`https://subtle.arifian.web.id/components/${slug}/`);
     expect(
-      document.querySelector('select[name="category"] option[selected]')
-        ?.textContent,
-    ).toBe(category);
+      document.querySelector(
+        'button[role="combobox"][aria-label="Component category"]',
+      )?.textContent,
+    ).toContain(category);
   }
 });
 

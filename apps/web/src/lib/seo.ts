@@ -12,6 +12,10 @@ export const pages = {
     "Components",
     "Explore the canonical Subtle components. Try accessible controls, layered overlays, data, media, and AI conversation specimens in all eight moods.",
   ],
+  "/charts/": [
+    "Charts",
+    "Read synthetic studio data through responsive area, bar, line, pie, and composed Recharts specimens, with mood tokens and accessible data tables.",
+  ],
   "/patterns/": [
     "Patterns",
     "Compose Subtle components into editorial heroes, focused workspaces, settings, search, file management, media galleries, and AI conversations.",

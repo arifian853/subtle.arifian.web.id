@@ -6,6 +6,7 @@ test("public routes have unique titles, descriptions and canonical URLs without 
     "/",
     "/foundations/",
     "/components/",
+    "/charts/",
     "/patterns/",
     "/motion/",
     "/moods/",
@@ -19,5 +20,5 @@ test("public routes have unique titles, descriptions and canonical URLs without 
     expect(meta.image).toBeUndefined();
     titles.add(meta.title);
   }
-  expect(titles.size).toBe(7);
+  expect(titles.size).toBe(8);
 });

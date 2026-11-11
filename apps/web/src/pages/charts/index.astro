@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Charts } from '../../components/Charts';
+import { MoodSwitcher } from '../../components/MoodSwitcher';
+---
+<Layout path="/charts/">
+  <div class="wrap page-intro"><p class="kicker">A readable view of working data</p><h1>Let the pattern<br />come forward.</h1><p class="lead">Five views of the same synthetic studio activity. Choose a chart for the question, keep its units visible, and carry the mood into the data.</p></div>
+  <div class="wrap catalog-moods"><MoodSwitcher client:load /></div>
+  <div class="wrap"><Charts client:visible /></div>
+  <section class="wrap section chart-notes"><h2>Read the values as well as the shape.</h2><p>Every plot includes a title, units, tooltip, legend, and a semantic data table. Line styles and written labels supplement color. A zero baseline keeps count comparisons honest. These are prepared examples, with no account data or network requests.</p><p><a class="text-link" href="https://recharts.github.io/">Recharts</a> supplies the rendering and keyboard accessibility layer. Subtle supplies the semantic palette, open composition, and surrounding controls. Series use one restrained 220 ms ease-out entrance after hydration checks the motion preference. Reduced motion renders the final values immediately and stops interpolation if the preference changes. Mood changes update CSS colors without replaying the entrance.</p></section>
+</Layout>

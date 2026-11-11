@@ -1,6 +1,6 @@
 import "./dom";
 import { afterEach, expect, test } from "bun:test";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { createElement } from "react";
 afterEach(cleanup);
 test("settings form validates inline, then saves synthetic values locally with visible feedback", async () => {
@@ -17,9 +17,17 @@ test("settings form validates inline, then saves synthetic values locally with v
   fireEvent.change(ui.getByLabelText("Workspace name"), {
     target: { value: "Paper studio" },
   });
-  fireEvent.change(ui.getByLabelText("Workspace type"), {
-    target: { value: "personal" },
+  fireEvent.click(ui.getByRole("combobox", { name: "Workspace type" }));
+  const personal = await ui.findByRole("option", {
+    name: "Personal collection",
   });
+  fireEvent.pointerDown(personal, { pointerType: "mouse" });
+  fireEvent.click(personal);
+  await waitFor(() =>
+    expect(ui.getByRole("combobox").textContent).toContain(
+      "Personal collection",
+    ),
+  );
   fireEvent.click(ui.getByLabelText("Weekly summary"));
   fireEvent.click(ui.getByRole("button", { name: "Save workspace" }));
   expect(ui.getByRole("status").textContent).toContain("Paper studio saved");
