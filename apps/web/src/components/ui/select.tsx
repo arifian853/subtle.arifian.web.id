@@ -41,7 +41,11 @@ export function Select({
         className="input select-trigger"
       >
         <Primitive.Value />
-        <Primitive.Icon aria-hidden="true">⌄</Primitive.Icon>
+        <Primitive.Icon aria-hidden="true" className="select-chevron">
+          <svg viewBox="0 0 16 16" fill="none" focusable="false">
+            <path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </Primitive.Icon>
       </Primitive.Trigger>
       <Primitive.Portal>
         <Primitive.Positioner
@@ -50,7 +54,7 @@ export function Select({
           className="select-positioner"
         >
           <Primitive.Popup
-            className="select-popup scrollbar"
+            className="select-popup"
             aria-label={label}
           >
             <Primitive.Group>

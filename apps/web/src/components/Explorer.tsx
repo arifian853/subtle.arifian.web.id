@@ -19,7 +19,7 @@ import { MoodSwitcher } from "./MoodSwitcher";
 import { FeedbackDemo } from "./FeedbackDemo";
 import { Select } from "./ui/select";
 import { Scrollbar } from "./ui/scrollbar";
-import { MoodPicker } from "./MoodPicker";
+import { CompactMoodPicker, MoodPicker } from "./MoodPicker";
 const ChartSpecimen = lazy(() =>
   import("./Charts").then((module) => ({ default: module.ChartSpecimen })),
 );
@@ -86,7 +86,19 @@ export function CanonicalSpecimen({ id }: { id: string }) {
         </ol>
       </Scrollbar>
     );
-  if (id === "mood-picker") return <MoodPicker />;
+  if (id === "mood-picker")
+    return (
+      <div className="mood-picker-variants">
+        <section>
+          <p className="product-meta">Compact / Appearance menu</p>
+          <CompactMoodPicker />
+        </section>
+        <section>
+          <p className="product-meta">Inline / Full mood choices</p>
+          <MoodPicker />
+        </section>
+      </div>
+    );
   if (id === "chart")
     return (
       <Suspense

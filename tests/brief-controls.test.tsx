@@ -42,6 +42,44 @@ test("custom Select labels its popup, selects a value, submits it, and dismisses
   await waitFor(() => expect(ui.queryByRole("listbox")).toBeNull());
 });
 
+test("compact MoodPicker starts closed, opens on request, and applies the selected site mood", async () => {
+  const { CompactMoodPicker } = await import("../apps/web/src/components/MoodPicker");
+  const ui = render(createElement(CompactMoodPicker));
+  const toggle = ui.getByRole("button", { name: /Appearance/ });
+  expect(toggle.getAttribute("aria-expanded")).toBe("false");
+  expect(ui.queryByRole("group", { name: "Choose a mood" })).toBeNull();
+  fireEvent.click(toggle);
+  expect(toggle.getAttribute("aria-expanded")).toBe("true");
+  expect(ui.getByRole("group", { name: "Choose a mood" })).toBeTruthy();
+  expect(ui.getAllByRole("radio")).toHaveLength(8);
+  fireEvent.click(ui.getByRole("radio", { name: "Forest" }));
+  expect(document.documentElement.dataset.mood).toBe("forest");
+  expect(toggle.textContent).toContain("Forest");
+});
+
+test("compact MoodPicker closes with Escape and restores focus to its trigger", async () => {
+  const { CompactMoodPicker } = await import("../apps/web/src/components/MoodPicker");
+  const ui = render(createElement(CompactMoodPicker));
+  const toggle = ui.getByRole("button", { name: /Appearance/ });
+  fireEvent.click(toggle);
+  const group = ui.getByRole("group", { name: "Choose a mood" });
+  fireEvent.keyDown(group, { key: "Escape" });
+  expect(toggle.getAttribute("aria-expanded")).toBe("false");
+  expect(document.activeElement).toBe(toggle);
+});
+
+test("Mood Picker catalog specimen shows compact and full controls together", async () => {
+  const { CanonicalSpecimen } = await import("../apps/web/src/components/Explorer");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { createElement } = await import("react");
+  const html = renderToStaticMarkup(
+    createElement(CanonicalSpecimen, { id: "mood-picker" }),
+  );
+  expect(html).toContain("Compact / Appearance menu");
+  expect(html).toContain("Inline / Full mood choices");
+  expect(html).toContain("Choose your mood");
+});
+
 test("MoodPicker can be controlled independently and keeps exactly eight choices", async () => {
   const { MoodPicker } = await import("../apps/web/src/components/MoodPicker");
   const onValueChange = mock(() => {});

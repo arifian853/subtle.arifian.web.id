@@ -52,6 +52,28 @@ test("chart families share finite synthetic data and accessible tables", async (
   }
 });
 
+test("about publishes the repository, local setup, and hosted MCP connection instructions", () => {
+  const source = readFileSync("apps/web/src/pages/about/index.astro", "utf8");
+  expect(source).toContain("https://github.com/arifian853/subtle.arifian.web.id");
+  expect(source).toContain("bun install --frozen-lockfile");
+  expect(source).toContain("bun run dev:api");
+  expect(source).toContain("https://subtle-api.arifian.web.id/mcp");
+  expect(source).toContain("Streamable HTTP");
+  expect(source).toContain("codex mcp add subtle --url https://subtle-api.arifian.web.id/mcp");
+  expect(source).toContain("codex mcp add subtle-local --url http://127.0.0.1:3001/mcp");
+});
+
+test("homepage attribution is centered and Select popup rows use the full available width", () => {
+  const styles = readFileSync("apps/web/src/styles/global.css", "utf8");
+  const credit = styles.match(/\.closing-credit\s*\{([^}]*)\}/)?.[1] ?? "";
+  const option = styles.match(/\.select-option\s*\{([^}]*)\}/)?.[1] ?? "";
+  const popup = styles.match(/\.select-popup\s*\{([^}]*)\}/)?.[1] ?? "";
+  expect(credit).toContain("text-align: center");
+  expect(option).toContain("width: 100%");
+  expect(popup).not.toContain("scrollbar-gutter: stable");
+  expect(readFileSync("apps/web/src/components/ui/select.tsx", "utf8")).toContain("viewBox=\"0 0 16 16\"");
+});
+
 test("brief pages explain corners, motion provenance, composition and authorship", () => {
   const read = (path: string) => readFileSync(`apps/web/src/${path}`, "utf8");
   expect(read("pages/foundations/index.astro")).toContain(

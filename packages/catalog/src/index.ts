@@ -249,8 +249,8 @@ components.push(
     "mood-picker",
     "Mood Picker",
     "Forms",
-    "A reusable eight-choice atmosphere control.",
-    "Use controlled value and onValueChange for a local preview, or omit them to apply the site mood.",
+    "A reusable eight-choice atmosphere control in compact Appearance-menu and full inline-radio variants.",
+    "Use the compact dropdown in a header or the full inline picker when all mood choices should remain visible. The inline picker also supports controlled previews.",
     "Native radios provide grouped naming, arrow navigation, and an announced selection.",
   ],
   [

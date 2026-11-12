@@ -226,6 +226,24 @@ try {
   });
   await categorySelect.focus();
   await page.keyboard.press("Enter");
+  await page.getByRole("listbox").waitFor();
+  const selectGeometry = await page.evaluate(() => {
+    const popup = document.querySelector(".select-popup")!.getBoundingClientRect();
+    const option = document.querySelector(".select-option")!.getBoundingClientRect();
+    const trigger = document.querySelector(".select-trigger")!.getBoundingClientRect();
+    const icon = document.querySelector(".select-chevron")!.getBoundingClientRect();
+    return {
+      leftInset: option.left - popup.left,
+      rightInset: popup.right - option.right,
+      iconCenterOffset: Math.abs((icon.top + icon.bottom) / 2 - (trigger.top + trigger.bottom) / 2),
+    };
+  });
+  check(
+    Math.abs(selectGeometry.leftInset - selectGeometry.rightInset) < 3 &&
+      selectGeometry.leftInset < 20 && selectGeometry.rightInset < 20,
+    "Select options fill the popup width evenly",
+  );
+  check(selectGeometry.iconCenterOffset <= 2, "Select chevron is vertically centered");
   await page.getByRole("option", { name: "Data", exact: true }).click();
   check(
     (await categorySelect.textContent())?.includes("Data"),
@@ -250,6 +268,27 @@ try {
       (element) => element === document.activeElement,
     ),
     "Select Escape restores focus",
+  );
+  await page.goto(`${origin}/components/forms/#mood-picker`);
+  await ready("Explorer");
+  await page.getByRole("heading", { name: "Mood Picker", exact: true }).waitFor();
+  const compactMoodTrigger = page.getByRole("button", { name: /Appearance/ });
+  await compactMoodTrigger.click();
+  await page.screenshot({ path: ".qa/screenshots/mood-picker-compact.png", fullPage: true });
+  await page.getByRole("group", { name: "Choose a mood" }).getByRole("radio", { name: "Beige", exact: true }).click();
+  check(
+    (await compactMoodTrigger.getAttribute("aria-expanded")) === "false" &&
+      (await page.evaluate(() => document.documentElement.dataset.mood)) === "beige",
+    "Compact Mood Picker selects and closes",
+  );
+  await compactMoodTrigger.click();
+  const compactMoodGroup = page.getByRole("group", { name: "Choose a mood" });
+  await compactMoodGroup.getByRole("radio", { name: "Forest", exact: true }).focus();
+  await page.keyboard.press("Escape");
+  check(
+    (await compactMoodTrigger.getAttribute("aria-expanded")) === "false" &&
+      (await compactMoodTrigger.evaluate((element) => element === document.activeElement)),
+    "Compact Mood Picker closes on Escape and restores focus",
   );
   await page.goto(`${origin}/moods/`);
   await ready("MoodBoards");
@@ -373,8 +412,11 @@ try {
       );
       await page.locator(".chart-study summary").first().click();
       check(
-        (await page.locator(".chart-plot .recharts-surface").count()) === 5,
-        "All chart families render SVG",
+        (await page.locator(".chart-study").count()) === 5 &&
+          (await page.locator(".chart-study").evaluateAll((studies) =>
+            studies.every((study) => study.querySelector(".chart-plot .recharts-surface")),
+          )),
+        "All five chart studies render SVG",
       );
       await audit(page, `charts ${id} @ ${width}`);
       await page.screenshot({
